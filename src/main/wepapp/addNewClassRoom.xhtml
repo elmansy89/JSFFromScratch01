@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html">
+<h:head>
+    <title>ADD NEW CLASS ROOM</title>
+</h:head>
+
+
+<h:body>
+    <h:form id="form" onkeypress="if (event.keyCode == 13) { return false; }">
+        <p:panel id="panel" header="Add New Class Room" style="margin-bottom:10px;">
+            <p:graphicImage value="/3.png" width="10%" height="10%"/>
+            <p:growl id="msgs" showDetail="true"/>
+
+            <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+
+                <p:outputLabel for="classRoomName" value="Class Room Name :" style="font-weight:bold"/>
+                <p:inputText id="classRoomName" value="#{ClassRoomBean.classRoom.crName}" required="true">
+                </p:inputText>
+                <p:outputLabel for="classRoomDuration" value="Class Room Duration :" style="font-weight:bold"/>
+                <p:inputText id="classRoomDuration" value="#{ClassRoomBean.classRoom.crDuration}" required="true">
+                </p:inputText>
+
+                <p:outputLabel for="classRoomNumberOfSessions" value="Class Room Number Of Sessions :"
+                               style="font-weight:bold"/>
+                <p:inputText id="classRoomNumberOfSessions" value="#{ClassRoomBean.classRoom.crNumberOfSessions}"
+                             required="true">
+                </p:inputText>
+
+                <p:outputLabel for="crSessionDuration" value="Class Room Session Duration :"
+                               style="font-weight:bold"/>
+                <p:inputText id="crSessionDuration" value="#{ClassRoomBean.classRoom.crSessionDuration}"
+                             required="true">
+                </p:inputText>
+
+                <p:outputLabel for="crStartDate" value="ClassRoom Start Date:" style="font-weight:bold"/>
+                <p:datePicker id="crStartDate" value="#{ClassRoomBean.classRoom.crStartDate}"
+                              required="true" monthNavigator="true"
+                              pattern="dd.MM.yyyy" mindate="#{ClassRoomBean.minDateofClassRoomStart}"
+                              yearNavigator="true" yearRange="2020:2099"/>
+
+
+                <p:outputLabel for="classRoomCources" value="Class Room Course :" style="font-weight:bold"/>
+                <p:selectOneMenu id="classRoomCources" value="#{ClassRoomBean.courses}" required="true" var="t"
+                                 filter="true" filterMatchMode="startsWith" converter="courseConverter">
+
+                    <f:selectItems value="#{ClassRoomBean.allCourses}" var="governorate"
+                                   itemLabel="#{governorate.coName}"  itemValue="#{governorate}"/>
+                    <p:ajax  listener="#{ClassRoomBean.getTeacherListFromCourse}"
+                            update="classRoomTeacher"/>
+
+                    <p:column>
+                        <h:outputText value="#{t.coName}"/>
+                    </p:column>
+
+
+                </p:selectOneMenu>
+
+            </h:panelGrid>
+
+            <p:outputLabel for="classRoomTeacher" value="ClassRoom Teacher:" style="font-weight:bold"/>
+            <p:pickList id="classRoomTeacher" value="#{ClassRoomBean.dualListModelTeacher}"
+                        var="emp" showSourceFilter="true" showTargetFilter="true"
+                        filterMatchMode="contains" showCheckbox="true" required="true"
+                        itemLabel=" #{emp.teName}(#{emp.teId})" itemValue="#{emp}"
+                        converter="teacherConverter"/>
+
+            <p:outputLabel for="classRoomStudents" value="ClassRoom Students:" style="font-weight:bold"/>
+            <p:pickList id="classRoomStudents" value="#{ClassRoomBean.studentDualListModel}"
+                        var="emp" showSourceFilter="true" showTargetFilter="true"
+                        filterMatchMode="contains" showCheckbox="true" required="true"
+                        itemLabel=" #{emp.stName}(#{emp.stId})" itemValue="#{emp}"
+                        converter="studentConventer"/>
+
+
+
+            <p:separator />
+
+
+            <p:commandButton value="Add New Class Room" id="add" update="panel" style="margin-bottom: 10px"
+                             action="#{ClassRoomBean.addClassRoom(ClassRoomBean.classRoom)}">
+            </p:commandButton>
+
+        </p:panel>
+
+    </h:form>
+</h:body>
+</html>

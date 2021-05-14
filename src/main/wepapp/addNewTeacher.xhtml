@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html">
+<h:head>
+    <title>ADD NEW Teacher</title>
+
+
+</h:head>
+
+
+<h:body>
+
+    <h:form id="form" onkeypress="if (event.keyCode == 13) { return false; }">
+        <p:panel id="panel" header="Add New Student" style="margin-bottom:10px;">
+            <p:graphicImage value="/3.png" width="10%" height="10%"  />
+            <p:growl id="msgs" showDetail="true" />
+
+            <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+
+                <p:outputLabel for="fullName" value="Full Name:" style="font-weight:bold"/>
+                <p:inputText id="fullName" value="#{TeacherBean.teacher.teName}" required="true">
+                    <p:keyFilter for="fullName" mask="alpha"/>
+                </p:inputText>
+                <p:outputLabel for="Graduation" value="Graduation:" style="font-weight:bold"/>
+                <p:inputText id="Graduation" value="#{TeacherBean.teacher.teGraduation}" required="true">
+                </p:inputText>
+                <p:outputLabel for="Governorate" value="Governorate:" style="font-weight:bold"/>
+                <p:selectOneMenu id="Governorate" value="#{TeacherBean.teacher.stGovernorate}" required="true"
+                                 filter="true" filterMatchMode="startsWith">
+                    <f:selectItem itemLabel="Select One" itemValue="#{null}"/>
+                    <f:selectItems value="#{TeacherBean.governorate}" var="governorate" itemLabel="#{governorate}"
+                                   itemValue="#{governorate}"/>
+                </p:selectOneMenu>
+                <p:outputLabel for="dob" value="Day Of Birth:" style="font-weight:bold"/>
+                <p:datePicker id="dob" value="#{TeacherBean.teacher.teBirthDay}"
+                              required="true" monthNavigator="true"
+                              pattern="dd.MM.yyyy"
+                              mindate="#{editor.minDate}"
+                              maxdate="#{editor.maxDate}"
+                              yearNavigator="true" yearRange="1965:2099"/>
+            </h:panelGrid>
+
+
+            <h:panelGrid id="gridPhone" columns="2" style="margin-bottom:10px" >
+
+                <p:outputLabel rendered="#{TeacherBean.showAddPhoneElements}" for="PhoneName"
+                               value="Phone Name:" style="font-weight:bold"/>
+                <p:inputText id="PhoneName" value="#{TeacherBean.contactNumbers.phName}"
+                             required="true" rendered="#{TeacherBean.showAddPhoneElements}">
+                </p:inputText>
+
+                <p:outputLabel rendered="#{TeacherBean.showAddPhoneElements}" for="PhoneType"
+                               value="Phone Type:" style="font-weight:bold"/>
+                <p:selectOneMenu  id="PhoneType" value="#{TeacherBean.contactNumbers.phType}"
+                                  rendered="#{TeacherBean.showAddPhoneElements}" required="true">
+                    <f:selectItem itemLabel="Select One" itemValue="#{null}"/>
+                    <f:selectItem itemLabel="Land Line" itemValue="Land Line"/>
+                    <f:selectItem itemLabel="Mobile" itemValue="Mobile"/>
+                </p:selectOneMenu>
+
+                <p:outputLabel rendered="#{TeacherBean.showAddPhoneElements}" for="PhoneNumber"
+                               value="Phone Number:" style="font-weight:bold"/>
+                <p:inputText id="PhoneNumber" value="#{TeacherBean.contactNumbers.phNumber}"
+                             required="true" rendered="#{TeacherBean.showAddPhoneElements}">
+                </p:inputText>
+
+
+
+                <p:commandButton value="Save Contact Number" id="Save" update="@form msgs"
+                                 style="margin-bottom: 10px"
+                                 rendered="#{TeacherBean.showAddPhoneElements}"
+                                 action="#{TeacherBean.savePhoneDetails}" >
+                </p:commandButton>
+
+            </h:panelGrid>
+
+
+            <p:commandButton value="Add Contact Number" id="Phones" update="@form"
+                             disabled="#{TeacherBean.disableAddTeacherAndAddPhoneButton}"
+                             style="margin-bottom: 10px"  action="#{TeacherBean.showPhoneElement}">
+            </p:commandButton>
+
+
+            <p:commandButton value="Add New Teacher" id="add" update="panel" style="margin-bottom: 10px"
+                             disabled="#{TeacherBean.disableAddTeacherAndAddPhoneButton}"
+                             action="#{TeacherBean.addTeacher(TeacherBean.teacher)}">
+            </p:commandButton>
+
+
+
+
+            <p:dataTable id="TeacherAddedTable"  var="Teacher" value="#{TeacherBean.lastAddedTeacher}">
+                <p:column headerText="Id">
+                    <h:outputText value="#{Teacher.teId}"/>
+                </p:column>
+
+                <p:column headerText="Name">
+                    <h:outputText value="#{Teacher.teName}"/>
+                </p:column>
+
+                <p:column headerText="DOB">
+                    <h:outputText value="#{Teacher.teBirthDay}">
+                        <f:convertDateTime pattern="dd.MM.yyyy" timeZone="GMT+4"/>
+                    </h:outputText>
+
+                </p:column>
+
+                <p:column headerText="Graduation">
+                    <h:outputText value="#{Teacher.teGraduation}"/>
+                </p:column>
+
+                <p:column headerText="Governorate">
+                    <h:outputText value="#{Teacher.stGovernorate}"/>
+                </p:column>
+
+                <p:column headerText="Register Date">
+                    <h:outputText value="#{Teacher.teJoinDate}">
+                        <f:convertDateTime pattern="dd.MM.yyyy" timeZone="GMT+4"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Contact Number">
+                    <p:commandButton value="Show" update="form:dialog" oncomplete="PF('dlg').show()"/>
+                </p:column>
+
+            </p:dataTable>
+        </p:panel>
+
+
+        <p:dialog modal="true" id="dialog" header="Teacher Contact Number"
+                  widgetVar="dlg"  showEffect="bounce" resizable="false"
+                  style="margin: 10%">
+
+            <p:dataTable id="TeacherPhones" style="margin-top:0px;padding:3%;border:0px"
+                         var="TeacherPhones" value="#{TeacherBean.addedTeacherPhones}">
+
+                <p:column headerText="Name">
+                    <h:outputText value="#{TeacherPhones.phName}"/>
+                </p:column>
+
+                <p:column headerText="Type">
+                    <h:outputText value="#{TeacherPhones.phType}"/>
+                </p:column>
+
+                <p:column headerText="Number">
+                    <h:outputText value="#{TeacherPhones.phNumber}"/>
+                </p:column>
+
+            </p:dataTable>
+        </p:dialog>
+
+
+    </h:form>
+</h:body>
+</html>

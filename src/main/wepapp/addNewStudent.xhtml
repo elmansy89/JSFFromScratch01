@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html">
+<h:head>
+    <title>ADD NEW STUDENT</title>
+
+
+</h:head>
+
+
+<h:body>
+
+    <h:form id="form" onkeypress="if (event.keyCode == 13) { return false; }">
+        <p:graphicImage value="/4.png" width="100%" height="100%"  />
+        <p:panel id="panel" header="Add New Student" style="margin-bottom:10px;">
+            <p:graphicImage value="/3.png" width="10%" height="10%"  />
+            <p:growl id="msgs" showDetail="true" />
+            <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+                <p:outputLabel for="fullName" value="Full Name:" style="font-weight:bold"/>
+                <p:inputText id="fullName" value="#{editor.student.stName}" required="true">
+                    <p:keyFilter for="fullName" mask="alpha"/>
+                </p:inputText>
+                <p:outputLabel for="Gender" value="Gender:" style="font-weight:bold"/>
+                <p:selectOneMenu id="Gender" value="#{editor.student.stGender}" required="true">
+                    <f:selectItem itemLabel="Select One" itemValue="#{null}"/>
+                    <f:selectItem itemLabel="Male" itemValue="Male"/>
+                    <f:selectItem itemLabel="Female" itemValue="Female"/>
+                </p:selectOneMenu>
+                <p:outputLabel for="Governorate" value="Governorate:" style="font-weight:bold"/>
+                <p:selectOneMenu id="Governorate" value="#{editor.student.stGovernorate}" required="true"
+                                 filter="true" filterMatchMode="startsWith">
+                    <f:selectItem itemLabel="Select One" itemValue="#{null}"/>
+                    <f:selectItems value="#{editor.governorate}" var="governorate" itemLabel="#{governorate}"
+                                   itemValue="#{governorate}"/>
+                </p:selectOneMenu>
+                <p:outputLabel for="dob" value="Day Of Birth:" style="font-weight:bold"/>
+                <p:datePicker id="dob" value="#{editor.student.stBirthDay}"
+                              required="true" monthNavigator="true"
+                              pattern="dd.MM.yyyy"
+                              mindate="#{editor.minDate}"
+                              maxdate="#{editor.maxDate}"
+                              yearNavigator="true" yearRange="1980:2099"/>
+                <p:outputLabel for="SchoolName" value="School Name:" style="font-weight:bold"/>
+                <p:inputText id="SchoolName" value="#{editor.student.stSchoolName}" required="false">
+                </p:inputText>
+                <p:outputLabel for="Address" value="Address:" style="font-weight:bold"/>
+                <p:inputText id="Address" value="#{editor.student.stAddress}" required="false">
+                </p:inputText>
+                <p:outputLabel for="ParentWork" value="Parent Work:" style="font-weight:bold"/>
+                <p:inputText id="ParentWork" value="#{editor.student.studentParentWork}" required="false">
+                </p:inputText>
+
+                <p:outputLabel for="ActiveParent" value="Active Parent:" style="font-weight:bold"/>
+                <p:selectOneMenu id="ActiveParent" value="#{editor.student.stActiveParent}" required="false">
+                    <f:selectItem itemLabel="Select One" itemValue="#{null}"/>
+                    <f:selectItem itemLabel="Father" itemValue="Father"/>
+                    <f:selectItem itemLabel="Mother" itemValue="Mother"/>
+                    <f:selectItem itemLabel="Brother" itemValue="Brother"/>
+                    <f:selectItem itemLabel="Sister" itemValue="Sister"/>
+                    <f:selectItem itemLabel="Grand Father" itemValue="Grand Father"/>
+                    <f:selectItem itemLabel="Grand Mother" itemValue="Grand Mother"/>
+                </p:selectOneMenu>
+
+            </h:panelGrid>
+
+
+            <h:panelGrid id="gridPhone" columns="2" style="margin-bottom:10px" >
+
+                <p:outputLabel rendered="#{editor.showAddPhoneElements}" for="PhoneName"
+                               value="Phone Name:" style="font-weight:bold"/>
+                <p:inputText id="PhoneName" value="#{editor.contactNumbers.phName}"
+                             required="true" rendered="#{editor.showAddPhoneElements}">
+                </p:inputText>
+
+                <p:outputLabel rendered="#{editor.showAddPhoneElements}" for="PhoneType"
+                               value="Phone Type:" style="font-weight:bold"/>
+                <p:selectOneMenu  id="PhoneType" value="#{editor.contactNumbers.phType}"
+                                  rendered="#{editor.showAddPhoneElements}" required="true">
+                    <f:selectItem itemLabel="Select One" itemValue="#{null}"/>
+                    <f:selectItem itemLabel="Land Line" itemValue="Land Line"/>
+                    <f:selectItem itemLabel="Mobile" itemValue="Mobile"/>
+                </p:selectOneMenu>
+
+                <p:outputLabel rendered="#{editor.showAddPhoneElements}" for="PhoneNumber"
+                               value="Phone Number:" style="font-weight:bold"/>
+                <p:inputText id="PhoneNumber" value="#{editor.contactNumbers.phNumber}"
+                             required="true" rendered="#{editor.showAddPhoneElements}">
+                </p:inputText>
+
+
+
+                <p:commandButton value="Save Contact Number" id="Save" update="@form msgs"
+                                 style="margin-bottom: 10px"
+                                 rendered="#{editor.showAddPhoneElements}"
+                                 action="#{editor.savePhoneDetails}" >
+                </p:commandButton>
+
+            </h:panelGrid>
+
+            <p:commandButton value="Add Teacher" id="addTeacher"
+                             style="margin-bottom: 10px"
+                             action="addNewTeacher" >
+            </p:commandButton>
+
+
+            <p:commandButton value="Add Contact Number" id="Phones" update="@form"
+                             disabled="#{editor.disableAddStudentAndAddPhoneButton}"
+                             style="margin-bottom: 10px"  action="#{editor.showPhoneElement}">
+            </p:commandButton>
+
+
+            <p:commandButton value="Add New Student" id="add" update="panel" style="margin-bottom: 10px"
+                             disabled="#{editor.disableAddStudentAndAddPhoneButton}"
+                             action="#{editor.addStudent(editor.student)}">
+            </p:commandButton>
+
+
+
+
+            <p:dataTable id="StudentAddedTable"  var="Student" value="#{editor.lastAddedStudent}">
+                <p:column headerText="Id">
+                    <h:outputText value="#{Student.stId}"/>
+                </p:column>
+
+                <p:column headerText="Name">
+                    <h:outputText value="#{Student.stName}"/>
+                </p:column>
+
+                <p:column headerText="DOB">
+                    <h:outputText value="#{Student.stBirthDay}">
+                        <f:convertDateTime pattern="dd.MM.yyyy" timeZone="GMT+4"/>
+                    </h:outputText>
+
+                </p:column>
+
+                <p:column headerText="Gender">
+                    <h:outputText value="#{Student.stGender}"/>
+                </p:column>
+
+                <p:column headerText="Governorate">
+                    <h:outputText value="#{Student.stGovernorate}"/>
+                </p:column>
+
+                <p:column headerText="Register Date">
+                    <h:outputText value="#{Student.stRegisterDate}">
+                        <f:convertDateTime pattern="dd.MM.yyyy" timeZone="GMT+4"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="School Name">
+                    <h:outputText value="#{Student.stSchoolName}"/>
+                </p:column>
+
+                <p:column headerText="Address" >
+                    <h:outputText value="#{Student.stAddress}">
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Parent Work">
+                    <h:outputText value="#{Student.studentParentWork}">
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Active Parent">
+                    <h:outputText value="#{Student.stActiveParent}">
+                    </h:outputText>
+                </p:column>
+
+
+                <p:column headerText="Parent Contact">
+                    <p:commandButton value="Show" update="form:dialog" oncomplete="PF('dlg').show()"/>
+                </p:column>
+
+            </p:dataTable>
+        </p:panel>
+
+
+        <p:dialog modal="true" id="dialog" header="Parent Contact Number"
+                  widgetVar="dlg"  showEffect="bounce" resizable="false"
+                  style="margin: 10%">
+
+            <p:dataTable id="StudentPhones" style="margin-top:0px;padding:3%;border:0px"
+                         var="StudentPhones" value="#{editor.lastAddedStudentPhones}">
+
+                <p:column headerText="Name">
+                    <h:outputText value="#{StudentPhones.phName}"/>
+                </p:column>
+
+                <p:column headerText="Type">
+                    <h:outputText value="#{StudentPhones.phType}"/>
+                </p:column>
+
+                <p:column headerText="Number">
+                    <h:outputText value="#{StudentPhones.phNumber}"/>
+                </p:column>
+
+            </p:dataTable>
+        </p:dialog>
+
+
+    </h:form>
+</h:body>
+</html>
+
